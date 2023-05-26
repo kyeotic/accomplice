@@ -14,7 +14,7 @@ export interface Mark {
 }
 
 export enum MarkType {
-  Chech = 'check',
+  Check = 'check',
   Cross = 'cross',
 }
 

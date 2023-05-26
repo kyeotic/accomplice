@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import Dexie, { Table } from 'dexie'
-import { useLiveQuery } from 'dexie-react'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { nanoid } from 'nanoid'
 
 import { Track } from './types.ts'
@@ -22,9 +22,14 @@ export class UnlockDb extends Dexie {
 export const db = new UnlockDb()
 
 export function useAddTrack() {
-  return useCallback((track: Track) => {
+  return useCallback((track: Omit<Track, 'id'>) => {
+    console.log('saving track', track)
+    const newTrack = {
+      ...track,
+      id: nanoid(),
+    }
     db.tracks
-      .add({ ...track, id: nanoid() })
+      .add(newTrack)
       .then((id: any) => console.log('added track', id))
       .catch((err) => console.error('saving track', err))
   }, [])
