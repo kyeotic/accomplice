@@ -659,6 +659,8 @@
   },
   "npm": {
     "specifiers": {
+      "@react-hook/event@1.2.6": "@react-hook/event@1.2.6_react@18.2.0",
+      "@use-it/event-listener@0.1.7": "@use-it/event-listener@0.1.7_react@18.2.0",
       "@vitejs/plugin-react-swc@^3.0.1": "@vitejs/plugin-react-swc@3.3.1_vite@4.3.9",
       "@vitejs/plugin-react@^2.1": "@vitejs/plugin-react@2.2.0_vite@3.2.7_@babel+core@7.22.1",
       "create-vite-extra@latest": "create-vite-extra@1.0.2",
@@ -1086,6 +1088,12 @@
         "integrity": "sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==",
         "dependencies": {}
       },
+      "@react-hook/event@1.2.6_react@18.2.0": {
+        "integrity": "sha512-JUL5IluaOdn5w5Afpe/puPa1rj8X6udMlQ9dt4hvMuKmTrBS1Ya6sb4sVgvfe2eU4yDuOfAhik8xhbcCekbg9Q==",
+        "dependencies": {
+          "react": "react@18.2.0"
+        }
+      },
       "@remix-run/router@1.6.2": {
         "integrity": "sha512-LzqpSrMK/3JBAVBI9u3NWtOhWNw5AMQfrUFYB0+bDHTSw17z++WJLsPsxAuK+oSddsxk4d7F/JcdDPM1M5YAhA==",
         "dependencies": {}
@@ -1343,6 +1351,12 @@
           "fast-glob": "fast-glob@3.2.12",
           "magic-string": "magic-string@0.30.0",
           "vite": "vite@3.2.7"
+        }
+      },
+      "@use-it/event-listener@0.1.7_react@18.2.0": {
+        "integrity": "sha512-hgfExDzUU9uTRTPDCpw2s9jWTxcxmpJya3fK5ADpf5VDpSy8WYwY/kh28XE0tUcbsljeP8wfan48QvAQTSSa3Q==",
+        "dependencies": {
+          "react": "react@18.2.0"
         }
       },
       "@vitejs/plugin-react-swc@3.3.1_vite@4.3.9": {

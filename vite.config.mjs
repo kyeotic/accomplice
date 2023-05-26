@@ -11,6 +11,8 @@ import 'npm:dexie@3.2.3'
 import 'npm:dexie-react-hooks@1.1.3'
 import 'npm:nanoid@4.0.2'
 
+import 'npm:@react-hook/event@1.2.6'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {

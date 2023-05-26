@@ -8,7 +8,7 @@ export default function TrackList() {
     <div>
       {tracks.map((track: Track) => (
         <div key={track.id}>
-          {JSON.stringify(track, null, 2)}{' '}
+          <img src={track.image} alt={track.id} />
           <button onClick={() => deleteTrack(track.id)}>delete</button>
         </div>
       ))}
