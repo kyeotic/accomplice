@@ -1,6 +1,7 @@
 import { defineConfig } from 'npm:vite@^3.1.3'
 import react from 'npm:@vitejs/plugin-react@^2.1'
-import WindiCSS from 'npm:vite-plugin-windicss@^1.9.0'
+import unocss from 'npm:unocss@0.52.x/vite'
+import { defineConfig as unoConfig, presetWind } from 'npm:unocss@0.52.x'
 
 import 'npm:react@^18.2'
 import 'npm:react-dom@^18.2/client'
@@ -16,14 +17,11 @@ export default defineConfig({
     port: 8000,
   },
   plugins: [
+    unocss(
+      unoConfig({
+        presets: [presetWind()],
+      })
+    ),
     react(),
-    WindiCSS({
-      scan: {
-        // By default only `src/` is scanned
-        dirs: ['src/'],
-        // We only have to specify the file extensions we actually use.
-        fileExtensions: ['js', 'ts', 'jsx', 'tsx'],
-      },
-    }),
   ],
 })

@@ -1,8 +1,6 @@
-import { useAddTrack } from './db.ts'
+import { addTrack } from './db.ts'
 
 export default function Upload() {
-  const addTrack = useAddTrack()
-
   return (
     <div className="m-2">
       <button

@@ -6,10 +6,10 @@ export default function App() {
   // Dexie does not work in SSR environment
   // if (!useHydrated()) return <span>loading</span>
   return (
-    <div>
+    <>
       <h1>Test</h1>
       <Upload />
       <TrackList />
-    </div>
+    </>
   )
 }
