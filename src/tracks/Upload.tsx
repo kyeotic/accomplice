@@ -19,7 +19,6 @@ export default function Upload() {
       addTrack({
         group: 'default',
         image: event.target.result,
-        marks: [],
       })
       reader.removeEventListener('load', handler)
     }

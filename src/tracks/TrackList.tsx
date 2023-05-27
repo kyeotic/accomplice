@@ -1,5 +1,6 @@
-import { useTracks, deleteTrack } from './db.ts'
+import { useTracks, deleteTrack, updateTrack } from './db.ts'
 import { Track } from './types.ts'
+import ImageEditor from './ImageEditor.tsx'
 
 export default function TrackList() {
   const tracks = useTracks()
@@ -8,7 +9,16 @@ export default function TrackList() {
     <div>
       {tracks.map((track: Track) => (
         <div key={track.id}>
-          <img src={track.image} alt={track.id} />
+          <ImageEditor
+            src={track.image}
+            alt={track.id}
+            onChange={(newSrc: string) =>
+              updateTrack({
+                ...track,
+                image: newSrc,
+              })
+            }
+          />
           <button onClick={() => deleteTrack(track.id)}>delete</button>
         </div>
       ))}
