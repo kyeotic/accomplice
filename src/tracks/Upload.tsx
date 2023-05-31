@@ -2,11 +2,11 @@ import { useState } from 'react'
 import useEvent from '@react-hook/event'
 import { addTrack } from './db.ts'
 
-export default function Upload() {
+export default function Upload({ group }: { group: string }) {
   const [image, setImage] = useState(null)
   useEvent(document, 'paste', (e: ClipboardEvent) => {
     e.preventDefault()
-    // console.log('paste', e.clipboardData?.files[0])
+    console.log('paste', group, e.clipboardData?.files[0])
 
     const file = e.clipboardData?.files[0]
 
@@ -17,7 +17,7 @@ export default function Upload() {
     const handler = (event: any) => {
       setImage(event.target.result)
       addTrack({
-        group: 'default',
+        group,
         image: event.target.result,
       })
       reader.removeEventListener('load', handler)

@@ -1,26 +1,16 @@
-import { useTracks, deleteTrack, updateTrack } from './db.ts'
+import { useTracks } from './db.ts'
 import { Track } from './types.ts'
-import ImageEditor from './ImageEditor.tsx'
+import TrackImage from './TrackImage.tsx'
+import Upload from './Upload.tsx'
 
-export default function TrackList() {
-  const tracks = useTracks()
+export default function TrackList({ group = 'default' }: { group: string }) {
+  const tracks = useTracks(group)
 
   return (
-    <div>
+    <div className="m-2">
+      <Upload group={group} />
       {tracks.map((track: Track) => (
-        <div key={track.id}>
-          <ImageEditor
-            src={track.image}
-            alt={track.id}
-            onChange={(newSrc: string) =>
-              updateTrack({
-                ...track,
-                image: newSrc,
-              })
-            }
-          />
-          <button onClick={() => deleteTrack(track.id)}>delete</button>
-        </div>
+        <TrackImage key={track.id} track={track} />
       ))}
     </div>
   )
