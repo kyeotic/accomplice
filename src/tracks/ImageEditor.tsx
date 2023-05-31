@@ -24,10 +24,9 @@ export default function ImageEditor({
     const marker = new MarkerArea(imageRef.current)
     marker.availableMarkerTypes = [EllipseMarker, CoverMarker]
     // deno-lint-ignore no-explicit-any
-    const onRender = (event: any) => {
+    marker.addEventListener('render', (event: any) => {
       onChange(event.dataUrl)
-    }
-    marker.addEventListener('render', onRender)
+    })
     if (onOpen) marker.addEventListener('show', () => onOpen())
     if (onClose) marker.addEventListener('close', () => onClose())
 
@@ -36,13 +35,10 @@ export default function ImageEditor({
     return () => {
       markerRef.current = null
     }
-  }, [imageRef.current])
+  }, [])
 
   const showMarker = useCallback(() => {
-    if (imageRef.current === null) return
-    const marker = new MarkerArea(imageRef.current)
-
-    marker.show()
+    markerRef.current?.show()
   }, [])
 
   return (
