@@ -9,7 +9,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "deploy": "run-s build deploy:deno",
-    "deploy:deno": "cd dist/ && deployctl deploy --prod --project=kyeotic-unlock https://deno.land/std@0.171.0/http/file_server.ts"
+    "deploy:deno": "cd dist/ && deployctl deploy --prod --project=kyeotic-unlock https://deno.land/x/spa_server@0.1.0/mod.ts"
   },
   "dependencies": {
     "@solidjs/router": "^0.8.2",

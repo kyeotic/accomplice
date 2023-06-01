@@ -14,7 +14,7 @@ export default function GroupPage() {
 
   createEffect(() => {
     if (!path.group) return
-    if (selectedGroup()?.name !== path.group) {
+    if (groups.length && selectedGroup()?.name !== path.group) {
       navigate('/')
     }
   })
