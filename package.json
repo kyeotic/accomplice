@@ -1,0 +1,40 @@
+{
+  "name": "untrack",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "deploy": "run-s build deploy:deno",
+    "deploy:deno": "cd dist/ && deployctl deploy --prod --project=kyeotic-unlock https://deno.land/std@0.171.0/http/file_server.ts"
+  },
+  "dependencies": {
+    "@react-hook/event": "^1.2.6",
+    "@reecelucas/react-use-hotkeys": "^2.0.0",
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.4",
+    "lodash": "^4.17.21",
+    "markerjs2": "^2.29.1",
+    "nanoid": "^4.0.2",
+    "npm-run-all": "^4.1.5",
+    "raviger": "^4.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "typescript": "^5.0.2",
+    "unocss": "^0.52.7",
+    "vite": "^4.3.9"
+  }
+}
