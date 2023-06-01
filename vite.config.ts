@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import solidPlugin from 'vite-plugin-solid'
 import unocss from 'unocss/vite'
 import { defineConfig as unoConfig, presetWind } from 'unocss'
 
@@ -14,6 +14,6 @@ export default defineConfig({
         presets: [presetWind()],
       })
     ),
-    react(),
+    solidPlugin(),
   ],
 })

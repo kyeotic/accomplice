@@ -1,53 +1,41 @@
-import { useRef, useCallback, useEffect } from 'react'
+// import { useRef, useCallback, useEffect } from 'react'
+import { type JSX, onMount } from 'solid-js'
 import { MarkerArea, EllipseMarker, CoverMarker } from 'markerjs2'
 
-export default function ImageEditor({
-  src,
-  alt,
-  onChange,
-  onOpen,
-  onClose,
-}: {
+export default function ImageEditor(props: {
   src: string
   alt: string
   onChange: (data: string) => void
   onOpen?: () => void
   onClose?: () => void
 }): JSX.Element {
-  const imageRef = useRef(null)
-  const markerRef = useRef<MarkerArea | null>(null)
+  let imageRef: HTMLImageElement | undefined
+  let markerRef: MarkerArea | undefined
 
-  useEffect(() => {
-    // console.log('image ref loaded', imageRef)
-    if (!imageRef.current || markerRef.current) return
+  onMount(() => {
+    if (!imageRef || markerRef)
+      throw new Error('ImageEditor did not mount correctly')
 
-    const marker = new MarkerArea(imageRef.current)
-    marker.availableMarkerTypes = [EllipseMarker, CoverMarker]
+    markerRef = new MarkerArea(imageRef)
+    markerRef.availableMarkerTypes = [EllipseMarker, CoverMarker]
     // deno-lint-ignore no-explicit-any
-    marker.addEventListener('render', (event: any) => {
-      onChange(event.dataUrl)
+    markerRef.addEventListener('render', (event) => {
+      props.onChange(event.dataUrl)
     })
-    if (onOpen) marker.addEventListener('show', () => onOpen())
-    if (onClose) marker.addEventListener('close', () => onClose())
-
-    markerRef.current = marker
-
-    return () => {
-      markerRef.current = null
-    }
-  }, [])
-
-  const showMarker = useCallback(() => {
-    markerRef.current?.show()
-  }, [])
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (props.onOpen) markerRef.addEventListener('show', () => props.onOpen!())
+    if (props.onClose)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      markerRef.addEventListener('close', () => props.onClose!())
+  })
 
   return (
     <img
-      className="image"
+      class="image"
       ref={imageRef}
-      src={src}
-      alt={alt}
-      onClick={showMarker}
+      src={props.src}
+      alt={props.alt}
+      onClick={() => markerRef?.show()}
     />
   )
 }

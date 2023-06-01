@@ -1,16 +1,14 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { nanoid } from 'nanoid'
 import { maxBy } from 'lodash'
 
 import { db } from '../db/db'
+import { useDbQuery } from '../db/query'
 import { Track } from '../types'
+import { Accessor } from 'solid-js'
 
-export function useTracks(group: string): Track[] {
-  return (
-    useLiveQuery(
-      () => db.tracks.where({ group }).sortBy('position'),
-      [group]
-    ) ?? []
+export function useTracks(group: Accessor<string>) {
+  return useDbQuery(async () =>
+    db.tracks.where({ group: group() }).sortBy('position')
   )
 }
 

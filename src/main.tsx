@@ -1,11 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+/* @refresh reload */
+import { render } from 'solid-js/web'
+import { Router } from '@solidjs/router'
 import App from './App.tsx'
 
 import 'virtual:uno.css'
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+const root = document.getElementById('root')
+
+if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
+  throw new Error(
+    'Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got mispelled?'
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+render(
+  () => (
+    <Router>
+      <App />
+    </Router>
+  ),
+  root!
 )

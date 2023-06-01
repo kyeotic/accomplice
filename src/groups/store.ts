@@ -1,11 +1,20 @@
-import { useLiveQuery } from 'dexie-react-hooks'
-
+import { Accessor } from 'solid-js'
 import { db } from '../db/db'
+import { useDbItem, useDbQuery } from '../db/query'
 import { Group } from '../types'
 import { nanoid } from 'nanoid'
 
-export function useGroups(): Group[] {
-  return useLiveQuery(() => db.groups.toCollection().sortBy('createdAt')) ?? []
+export function useGroups() {
+  return useDbQuery(() => db.groups.toCollection().sortBy('createdAt'))
+}
+
+export function useGroup(name: Accessor<string>) {
+  return useDbItem(async () => {
+    const group = await db.groups.where({ name: name() }).first()
+    if (group) return group
+    const groups = await db.groups.toCollection().sortBy('createdAt')
+    return groups[0]
+  })
 }
 
 export async function newGroup() {

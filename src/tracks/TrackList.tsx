@@ -1,17 +1,15 @@
 import { useTracks } from './store.ts'
-import { Track } from '../types.ts'
 import TrackImage from './TrackImage.tsx'
 import Upload from './Upload.tsx'
+import { For } from 'solid-js'
 
-export default function TrackList({ group = 'default' }: { group: string }) {
-  const tracks = useTracks(group)
+export default function TrackList(props: { groupId: string }) {
+  const tracks = useTracks(() => props.groupId)
 
   return (
-    <div className="m-2">
-      <Upload group={group} />
-      {tracks.map((track: Track) => (
-        <TrackImage key={track.id} track={track} />
-      ))}
+    <div class="m-2">
+      <Upload groupId={props.groupId} />
+      <For each={tracks}>{(track) => <TrackImage track={track} />}</For>
     </div>
   )
 }

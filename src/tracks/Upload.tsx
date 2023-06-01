@@ -1,10 +1,10 @@
-import useEvent from '@react-hook/event'
+import { onMount, onCleanup } from 'solid-js'
 import { addTrack } from './store.ts'
 
-export default function Upload({ group }: { group: string }) {
-  useEvent(document, 'paste', (e: ClipboardEvent) => {
+export default function Upload({ groupId }: { groupId: string }) {
+  function handlePaste(e: ClipboardEvent) {
     e.preventDefault()
-    console.log('paste', group, e.clipboardData?.files[0])
+    console.log('paste', groupId, e.clipboardData?.files[0])
 
     const file = e.clipboardData?.files[0]
 
@@ -15,7 +15,7 @@ export default function Upload({ group }: { group: string }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handler = (event: any) => {
       addTrack({
-        group,
+        group: groupId,
         image: event.target.result,
       })
       reader.removeEventListener('load', handler)
@@ -24,7 +24,10 @@ export default function Upload({ group }: { group: string }) {
     reader.addEventListener('load', handler)
 
     reader.readAsDataURL(file)
-  })
+  }
+
+  onMount(() => document.addEventListener('paste', handlePaste))
+  onCleanup(() => document.removeEventListener('paste', handlePaste))
 
   return null
 }

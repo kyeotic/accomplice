@@ -1,102 +1,88 @@
-import { useState, useCallback, useRef, FormEvent, useEffect } from 'react'
-import { useNavigate, useQueryParams } from 'raviger'
-import useKey from '@reecelucas/react-use-hotkeys'
+import { createSignal, createEffect, Show, mergeProps } from 'solid-js'
+import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
 
-import { updateGroup, deleteGroup } from './store.ts'
+import { updateGroup, deleteGroup, useGroups } from './store.ts'
 import TrackList from '../tracks/TrackList.tsx'
 import { Group } from '../types.ts'
 
-export default function GroupEdit({
-  group,
-  canDelete = false,
-}: {
-  group: Group
-  canDelete: boolean
-}) {
+export default function GroupEdit() {
+  const params = useParams()
+  const groups = useGroups()
+
+  const group = () => groups.find((g) => g.name === params.group) ?? groups[0]
+  const canDelete = () => groups.length > 1
+
   return (
-    <div className="p-2">
-      <GroupForm group={group} canDelete={canDelete} />
-      <TrackList group={group.name} />
-    </div>
+    <Show when={group()}>
+      <div class="p-2">
+        <GroupForm group={group()} canDelete={canDelete()} />
+        <TrackList groupId={group().id} />
+      </div>
+    </Show>
   )
 }
 
-function GroupForm({
-  group,
-  canDelete = false,
-}: {
-  group: Group
-  canDelete: boolean
-}) {
+function GroupForm(props: { group: Group; canDelete: boolean }) {
+  const merged = mergeProps({ canDelete: false }, props)
   const navigate = useNavigate()
-  const [{ new: isNew }, setQuery] = useQueryParams()
-  const [name, setName] = useState(group.name)
-  const nameRef = useRef<HTMLInputElement | null>(null)
+  const [query, setQuery] = useSearchParams()
+  const [name, setName] = createSignal('')
+  let nameRef: HTMLInputElement | undefined
 
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
+  createEffect(() => {
+    setName(props.group.name)
+  })
 
-      await updateGroup({ ...group, name })
-      navigate(`/${name}`, { replace: true })
-    },
-    [name, group, navigate]
-  )
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault()
 
-  useEffect(() => {
-    setName(group.name)
-  }, [group])
+    await updateGroup({ ...props.group, name: name() })
+    navigate(`/${name()}`, { replace: true })
+  }
 
-  useEffect(() => {
-    if (!isNew) return
-    setQuery({}, {})
+  // If we are coming in from group create we want to rename
+  createEffect(() => {
+    if (!query.new) return
+    setQuery({ new: null })
     // This is needed because the page change resets the select after focus
-    setTimeout(() => nameRef.current?.select(), 1)
+    setTimeout(() => nameRef?.select(), 1)
+  })
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNew])
+  function resetName(e: KeyboardEvent) {
+    if (e.key !== 'Escape' && e.key !== 'Esc') return
+    // must blur first or the value will be blocked
+    nameRef?.blur()
+    setName(props.group.name)
+  }
 
-  useKey(
-    'Escape',
-    () => {
-      setName(group.name)
-    },
-    { ignoredElementWhitelist: ['INPUT'] }
-  )
-
-  const handleDelete = useCallback(async () => {
-    console.log('delete group', group)
-    deleteGroup(group.id)
+  const handleDelete = async () => {
+    // console.log('delete group', props.group)
+    deleteGroup(props.group.id)
     navigate('/')
-  }, [navigate, group])
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-sm">
-      <div className="flex items-center border-solid border-b border-teal-500 py-2 mb-2">
+    <form onSubmit={handleSubmit} class="w-full max-w-sm">
+      <div class="flex items-center border-solid border-b border-teal-500 py-2 mb-2">
         <input
           ref={nameRef}
-          className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+          class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
           type="text"
-          value={name}
-          onFocus={selectOnFocus}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setName(e.target.value)
-          }
+          value={name()}
+          onFocus={(e) => e.target.select()}
+          onChange={(e) => setName(e.target.value)}
+          onKeyUp={resetName}
         />
-        {canDelete && (
+        <Show when={merged.canDelete}>
           <button
-            className="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
+            class="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
             type="button"
             onClick={handleDelete}
           >
             Delete Group ❌
           </button>
-        )}
+        </Show>
       </div>
     </form>
   )
-}
-
-function selectOnFocus(e: any) {
-  e.target.select()
 }

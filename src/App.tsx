@@ -1,4 +1,7 @@
+import { Routes, Route } from '@solidjs/router'
 import GroupList from './groups/GroupList.tsx'
+import GroupEdit from './groups/GroupEdit.tsx'
+
 // import { useHydrated } from './ultra/useHydrated.ts'
 
 import './tracks/styles.css'
@@ -9,6 +12,10 @@ export default function App() {
   return (
     <>
       <GroupList />
+      <Routes>
+        <Route path="/" component={GroupEdit} />
+        <Route path="/:group" component={GroupEdit} />
+      </Routes>
     </>
   )
 }

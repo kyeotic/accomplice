@@ -27,6 +27,7 @@ export class UnlockDb extends Dexie {
           .put({ name: 'default', createdAt: Date.now() })
       })
 
+    // use group.id
     this.version(3)
       .stores({ groupsTemp: '&id, &name', groups: null })
       .upgrade(async (transaction) => {
@@ -36,7 +37,6 @@ export class UnlockDb extends Dexie {
 
         await transaction.table('groupsTemp').bulkAdd(newGroups)
       })
-
     this.version(4)
       .stores({
         groups: '&id, &name',
@@ -45,6 +45,18 @@ export class UnlockDb extends Dexie {
       .upgrade(async (transaction) => {
         const dbGroups = await transaction.table('groupsTemp').toArray()
         await transaction.table('groups').bulkAdd(dbGroups)
+      })
+    // Store tracks with group.id
+    this.version(5)
+      .stores({ groups: '&id, &name' })
+      .upgrade(async (transaction) => {
+        const dbTracks = await transaction.table('tracks').toArray()
+        const dbGroups = await transaction.table('groups').toArray()
+        const tracks = dbTracks.map((t) => ({
+          ...t,
+          group: dbGroups.find((g) => g.name === t.group).id,
+        }))
+        await transaction.table('tracks').bulkPut(tracks)
       })
   }
 }

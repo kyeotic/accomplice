@@ -2,23 +2,23 @@ import { deleteTrack, updateTrack } from './store.ts'
 import { Track } from '../types.ts'
 import ImageEditor from './ImageEditor.tsx'
 
-export default function TrackItem({ track }: { track: Track }) {
+export default function TrackItem(props: { track: Track }) {
   return (
-    <div className="flex">
-      <div className="flex-none">
+    <div class="flex">
+      <div class="flex-none">
         <ImageEditor
-          src={track.image}
-          alt={track.id}
+          src={props.track.image}
+          alt={props.track.id}
           onChange={(newSrc: string) =>
             updateTrack({
-              ...track,
+              ...props.track,
               image: newSrc,
             })
           }
         />
       </div>
-      <div className="flex-none">
-        <button onClick={() => deleteTrack(track.id)}>delete</button>
+      <div class="flex-none">
+        <button onClick={() => deleteTrack(props.track.id)}>delete</button>
       </div>
     </div>
   )

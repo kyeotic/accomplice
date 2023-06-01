@@ -1,61 +1,56 @@
-import { useCallback, type FormEvent } from 'react'
-import { usePath, Link, useNavigate } from 'raviger'
+import { useParams, A, useNavigate } from '@solidjs/router'
 
 import { useGroups, newGroup } from './store.ts'
-import GroupEdit from './GroupEdit.tsx'
+import { For } from 'solid-js'
 
 export default function GroupList() {
   const navigate = useNavigate()
-  const path = (usePath() ?? '/').substring(1)
+  const path = useParams()
   const groups = useGroups()
-  const selectedGroup = groups.find((g) => g.name === path) ?? groups[0]
+  const selectedGroup = groups.find((g) => g.name === path.group) ?? groups[0]
 
-  const handleAdd = useCallback(
-    async (e: FormEvent<HTMLElement>) => {
-      e.preventDefault()
+  const handleAdd = async (e: Event) => {
+    e.preventDefault()
 
-      const group = await newGroup()
-      navigate(`/${group.name}?new=true`)
-    },
-    [navigate]
-  )
+    const group = await newGroup()
+    navigate(`/${group.name}?new=true`)
+  }
 
   return (
     <>
-      <div className="mb-4 text-lg font-medium text-center text-gray-500 border-b border-gray-200 font-sans">
-        <ul className="flex flex-wrap -mb-px list-none items-center">
-          {groups.map((g, i) => (
-            <li key={g.name} className="mr-2">
-              {g === selectedGroup ? (
-                <Link
-                  href={`/${i === 0 ? '' : g.name}`}
-                  className="reset inline-block p-2 border-solid text-teal-600 border-b-2 border-teal-600 rounded-t-lg active"
-                >
-                  {g.name}
-                </Link>
-              ) : (
-                <Link
-                  href={`/${i === 0 ? '' : g.name}`}
-                  className="reset inline-block p-2 border-solid border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-400 hover:border-gray-300"
-                >
-                  {g.name}
-                </Link>
-              )}
-            </li>
-          ))}
-          <li className="mr-2">
+      <div class="mb-4 text-lg font-medium text-center text-gray-500 border-b border-gray-200 font-sans">
+        <ul class="flex flex-wrap -mb-px list-none items-center">
+          <For each={groups}>
+            {(g, i) => (
+              <li class="mr-2">
+                {g === selectedGroup ? (
+                  <A
+                    href={`/${i() === 0 ? '' : g.name}`}
+                    class="reset inline-block p-2 border-solid text-teal-600 border-b-2 border-teal-600 rounded-t-lg active"
+                  >
+                    {g.name}
+                  </A>
+                ) : (
+                  <A
+                    href={`/${i() === 0 ? '' : g.name}`}
+                    class="reset inline-block p-2 border-solid border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-400 hover:border-gray-300"
+                  >
+                    {g.name}
+                  </A>
+                )}
+              </li>
+            )}
+          </For>
+          <li class="mr-2">
             <span
               onClick={handleAdd}
-              className="reset inline-block p-2 border-solid border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-400 hover:border-gray-300 cursor-copy"
+              class="reset inline-block p-2 border-solid border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-400 hover:border-gray-300 cursor-copy"
             >
               +
             </span>
           </li>
         </ul>
       </div>
-      {selectedGroup && (
-        <GroupEdit group={selectedGroup} canDelete={groups.length > 1} />
-      )}
     </>
   )
 }
