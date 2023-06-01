@@ -6,16 +6,28 @@ import { updateGroup, deleteGroup } from './store.ts'
 import TrackList from '../tracks/TrackList.tsx'
 import { Group } from '../types.ts'
 
-export default function GroupEdit({ group }: { group: Group }) {
+export default function GroupEdit({
+  group,
+  canDelete = false,
+}: {
+  group: Group
+  canDelete: boolean
+}) {
   return (
     <div className="p-2">
-      <GroupForm group={group} />
+      <GroupForm group={group} canDelete={canDelete} />
       <TrackList group={group.name} />
     </div>
   )
 }
 
-function GroupForm({ group }: { group: Group }) {
+function GroupForm({
+  group,
+  canDelete = false,
+}: {
+  group: Group
+  canDelete: boolean
+}) {
   const navigate = useNavigate()
   const [{ new: isNew }, setQuery] = useQueryParams()
   const [name, setName] = useState(group.name)
@@ -71,13 +83,15 @@ function GroupForm({ group }: { group: Group }) {
             setName(e.target.value)
           }
         />
-        <button
-          className="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
-          type="button"
-          onClick={handleDelete}
-        >
-          Delete Group ❌
-        </button>
+        {canDelete && (
+          <button
+            className="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
+            type="button"
+            onClick={handleDelete}
+          >
+            Delete Group ❌
+          </button>
+        )}
       </div>
     </form>
   )

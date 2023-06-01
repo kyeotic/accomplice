@@ -53,7 +53,9 @@ export default function GroupList() {
           </li>
         </ul>
       </div>
-      {selectedGroup && <GroupEdit group={selectedGroup} />}
+      {selectedGroup && (
+        <GroupEdit group={selectedGroup} canDelete={groups.length > 1} />
+      )}
     </>
   )
 }
