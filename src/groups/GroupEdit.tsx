@@ -1,22 +1,16 @@
 import { createSignal, createEffect, Show, mergeProps } from 'solid-js'
-import { useNavigate, useParams, useSearchParams } from '@solidjs/router'
+import { useNavigate, useSearchParams } from '@solidjs/router'
 
-import { updateGroup, deleteGroup, useGroups } from './store.ts'
+import { updateGroup, deleteGroup } from './store.ts'
 import TrackList from '../tracks/TrackList.tsx'
 import { Group } from '../types.ts'
 
-export default function GroupEdit() {
-  const params = useParams()
-  const groups = useGroups()
-
-  const group = () => groups.find((g) => g.name === params.group) ?? groups[0]
-  const canDelete = () => groups.length > 1
-
+export default function GroupEdit(props: { group: Group; canDelete: boolean }) {
   return (
-    <Show when={group()}>
+    <Show when={props.group}>
       <div class="p-2">
-        <GroupForm group={group()} canDelete={canDelete()} />
-        <TrackList groupId={group().id} />
+        <GroupForm group={props.group} canDelete={props.canDelete} />
+        <TrackList groupId={props.group.id} />
       </div>
     </Show>
   )
