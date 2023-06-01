@@ -1,4 +1,4 @@
-import GroupList from './tracks/GroupList.tsx'
+import GroupList from './groups/GroupList.tsx'
 // import { useHydrated } from './ultra/useHydrated.ts'
 
 import './tracks/styles.css'

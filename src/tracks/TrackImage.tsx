@@ -1,6 +1,5 @@
-import { useState, useCallback } from 'react'
-import { deleteTrack, updateTrack } from './db.ts'
-import { Track } from './types.ts'
+import { deleteTrack, updateTrack } from './store.ts'
+import { Track } from '../types.ts'
 import ImageEditor from './ImageEditor.tsx'
 
 export default function TrackItem({ track }: { track: Track }) {

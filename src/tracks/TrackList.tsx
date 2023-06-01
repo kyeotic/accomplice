@@ -1,5 +1,5 @@
-import { useTracks } from './db.ts'
-import { Track } from './types.ts'
+import { useTracks } from './store.ts'
+import { Track } from '../types.ts'
 import TrackImage from './TrackImage.tsx'
 import Upload from './Upload.tsx'
 

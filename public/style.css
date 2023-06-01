@@ -7,3 +7,14 @@ body {
 p {
   margin: 0 auto 1em;
 }
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}

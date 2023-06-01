@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import useEvent from '@react-hook/event'
-import { addTrack } from './db.ts'
+import { addTrack } from './store.ts'
 
 export default function Upload({ group }: { group: string }) {
-  const [image, setImage] = useState(null)
   useEvent(document, 'paste', (e: ClipboardEvent) => {
     e.preventDefault()
     console.log('paste', group, e.clipboardData?.files[0])
@@ -14,8 +12,8 @@ export default function Upload({ group }: { group: string }) {
 
     const reader = new FileReader()
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handler = (event: any) => {
-      setImage(event.target.result)
       addTrack({
         group,
         image: event.target.result,
@@ -29,25 +27,4 @@ export default function Upload({ group }: { group: string }) {
   })
 
   return null
-
-  // return (
-  //   <div className="m-2">
-  //     <button
-  //       onClick={() =>
-  //         addTrack({
-  //           group: 'default',
-  //           image: 'test',
-  //           marks: [],
-  //         })
-  //       }
-  //     >
-  //       Add Track
-  //     </button>
-  //     {image && <img src={image} />}
-  //   </div>
-  // )
-}
-
-function encode(imageStream: string): string {
-  return imageStream
 }
