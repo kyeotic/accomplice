@@ -30,16 +30,7 @@ export default function TrackItem(props: { track: Track; isFinal?: boolean }) {
             →
           </Button>
         </div>
-        <ImageEditor
-          src={props.track.image}
-          alt={props.track.id}
-          onChange={(newSrc: string) =>
-            updateTrack({
-              ...props.track,
-              image: newSrc,
-            })
-          }
-        />
+        <ImageEditor track={props.track} />
       </div>
     </div>
   )

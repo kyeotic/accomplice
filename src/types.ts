@@ -1,8 +1,10 @@
 export interface Track {
   id: string
   group: string
-  image: string
   position: number
+  image: string
+  markerImage?: string
+  markerState?: string
 }
 
 export interface Group {
