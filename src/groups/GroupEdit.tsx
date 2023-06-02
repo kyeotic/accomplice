@@ -31,8 +31,15 @@ function GroupForm(props: { group: Group; canDelete: boolean }) {
   const handleSubmit = async (e: Event) => {
     e.preventDefault()
 
-    await updateGroup({ ...props.group, name: name() })
-    navigate(`/${name()}`, { replace: true })
+    const newName = name()
+    await updateGroup({ ...props.group, name: newName })
+    console.log('navigating')
+    // Wait for the live query to reset before trying to navigate
+    // otherwise it wont be found and we will get 404ed
+    setTimeout(() => {
+      navigate(`/${newName}`, { replace: true })
+      console.log('navigated', newName)
+    }, 1)
   }
 
   // If we are coming in from group create we want to rename
