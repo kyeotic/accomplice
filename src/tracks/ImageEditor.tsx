@@ -1,4 +1,4 @@
-import { type JSX, onMount, createSignal, createEffect } from 'solid-js'
+import { type JSX, onMount, createSignal } from 'solid-js'
 import {
   MarkerArea,
   EllipseMarker,

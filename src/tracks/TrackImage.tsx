@@ -1,5 +1,5 @@
 import { Button } from '../components/mod.ts'
-import { deleteTrack, updateTrack, moveTrack } from './store.ts'
+import { deleteTrack, moveTrack } from './store.ts'
 import { Track } from '../types.ts'
 import ImageEditor from './ImageEditor.tsx'
 
