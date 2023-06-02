@@ -2,7 +2,6 @@ import { Routes, Route } from '@solidjs/router'
 
 // import { useHydrated } from './ultra/useHydrated.ts'
 
-import './tracks/styles.css'
 import GroupPage from './groups/GroupPage.tsx'
 
 export default function App() {

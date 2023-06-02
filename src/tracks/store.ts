@@ -42,3 +42,34 @@ export async function updateTrack(track: Track) {
 export async function deleteTrack(id: string) {
   return await db.tracks.delete(id)
 }
+
+export async function moveTrack(track: Track, targetPosition: number) {
+  // console.log('test move', targetPosition)
+  // return
+  if (track.position === targetPosition) return
+  if (!Number.isInteger(targetPosition) || targetPosition < 0)
+    throw new Error('targetPosition must be an integer >= 0')
+  return await db.transaction('readwrite', db.tracks, async () => {
+    const dbTracks = await db.tracks.where({ group: track.group }).toArray()
+
+    // find all the tracks between the current position and the target
+    const isDecreasing = targetPosition < track.position
+    const tracksToMove = isDecreasing
+      ? dbTracks.filter(
+          (t) => t.position >= targetPosition && t.position < track.position
+        )
+      : dbTracks.filter(
+          (t) => t.position <= targetPosition && t.position > track.position
+        )
+
+    await db.tracks.bulkPut([
+      // if target is decreasing everything else shifts up
+      // if target is increasing everything else shifts down
+      ...tracksToMove.map((t) => ({
+        ...t,
+        position: isDecreasing ? t.position + 1 : t.position - 1,
+      })),
+      { ...track, position: targetPosition },
+    ])
+  })
+}

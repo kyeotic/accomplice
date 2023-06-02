@@ -1,10 +1,32 @@
-import { deleteTrack, updateTrack } from './store.ts'
+import { Button } from '../components/mod.ts'
+import { deleteTrack, updateTrack, moveTrack } from './store.ts'
 import { Track } from '../types.ts'
 import ImageEditor from './ImageEditor.tsx'
 
-export default function TrackItem(props: { track: Track }) {
+export default function TrackItem(props: { track: Track; isFinal?: boolean }) {
   return (
-    <div class="flex">
+    <div class="flex flex-col max-w-full gap-y-2 mb-4">
+      <div class="flex flex-none h-[30px]  justify-between">
+        <Button
+          small
+          secondary
+          disabled={props.track.position === 0}
+          onClick={() => moveTrack(props.track, props.track.position - 1)}
+        >
+          ←
+        </Button>
+        <Button small danger onClick={() => deleteTrack(props.track.id)}>
+          Delete
+        </Button>
+        <Button
+          small
+          secondary
+          disabled={props.isFinal}
+          onClick={() => moveTrack(props.track, props.track.position + 1)}
+        >
+          →
+        </Button>
+      </div>
       <div class="flex-none">
         <ImageEditor
           src={props.track.image}
@@ -16,9 +38,6 @@ export default function TrackItem(props: { track: Track }) {
             })
           }
         />
-      </div>
-      <div class="flex-none">
-        <button onClick={() => deleteTrack(props.track.id)}>delete</button>
       </div>
     </div>
   )

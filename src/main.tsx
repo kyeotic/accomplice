@@ -3,7 +3,7 @@ import { render } from 'solid-js/web'
 import { Router } from '@solidjs/router'
 import App from './App.tsx'
 
-import 'virtual:uno.css'
+import './main.css'
 
 const root = document.getElementById('root')
 
