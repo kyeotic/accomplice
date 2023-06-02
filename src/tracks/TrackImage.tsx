@@ -6,11 +6,12 @@ import ImageEditor from './ImageEditor.tsx'
 export default function TrackItem(props: { track: Track; isFinal?: boolean }) {
   return (
     <div class="flex justify-center max-w-full gap-y-2 mb-4">
-      <div class="flex-shrink relative">
-        <div class="flex h-[30px] justify-between mb-2">
+      <div class="flex-shrink bg-gray-100">
+        <div class="flex h-[30px] justify-between ">
           <Button
             small
             secondary
+            extraClass="rounded-tl"
             disabled={props.track.position === 0}
             onClick={() => moveTrack(props.track, props.track.position - 1)}
           >
@@ -22,6 +23,7 @@ export default function TrackItem(props: { track: Track; isFinal?: boolean }) {
           <Button
             small
             secondary
+            extraClass="rounded-tr"
             disabled={props.isFinal}
             onClick={() => moveTrack(props.track, props.track.position + 1)}
           >

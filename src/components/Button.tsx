@@ -10,7 +10,7 @@ interface ButtonProps
   extraClass?: string
 }
 
-const BASE = 'font-bold rounded-full'
+const BASE = 'font-bold'
 const MEDIUM = 'py-2 px-4'
 const SMALL = 'py-0.5 px-3'
 const DISABLED = 'opacity-50 cursor-not-allowed'
@@ -24,6 +24,7 @@ export default function Button(props: ButtonProps) {
     mergeProps(
       {
         class: BASE,
+        type: 'button' as JSX.ButtonHTMLAttributes<HTMLButtonElement>['type'],
       },
       props
     ),
@@ -35,6 +36,7 @@ export default function Button(props: ButtonProps) {
       'secondary',
       'disabled',
       'onClick',
+      'type',
     ]
   )
 
@@ -65,6 +67,7 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
+      type={merged.type}
       class={style()}
       {...rest}
       onClick={props.onClick ? onClick : undefined}

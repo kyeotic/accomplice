@@ -4,13 +4,14 @@ import { useNavigate, useSearchParams } from '@solidjs/router'
 import { updateGroup, deleteGroup } from './store.ts'
 import TrackList from '../tracks/TrackList.tsx'
 import { Group } from '../types.ts'
+import { Button } from '../components/mod.ts'
 
 export default function GroupEdit(props: { group: Group; canDelete: boolean }) {
   return (
     <Show when={props.group}>
       <div class="p-2">
-        <GroupForm group={props.group} canDelete={props.canDelete} />
         <TrackList groupId={props.group.id} />
+        <GroupForm group={props.group} canDelete={props.canDelete} />
       </div>
     </Show>
   )
@@ -56,27 +57,36 @@ function GroupForm(props: { group: Group; canDelete: boolean }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} class="w-full max-w-sm">
-      <div class="flex items-center border-solid border-b border-teal-500 py-2 mb-2">
+    <form
+      onSubmit={handleSubmit}
+      class=" flex justify-center bg-white shadow-md rounded pb-2 mb-2"
+    >
+      <div class="">
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="groupName"
+        >
+          Group Name
+        </label>
+
         <input
           ref={nameRef}
-          class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+          id="groupName"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
           value={name()}
           onFocus={(e) => e.target.select()}
           onChange={(e) => setName(e.target.value)}
           onKeyUp={resetName}
         />
-        <Show when={merged.canDelete}>
-          <button
-            class="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
-            type="button"
-            onClick={handleDelete}
-          >
-            Delete Group ❌
-          </button>
-        </Show>
       </div>
+      <Show when={merged.canDelete}>
+        <div class="mt-7 mb-1 mx-4">
+          <Button extraClass="text-sm rounded" danger onClick={handleDelete}>
+            Delete Group ❌
+          </Button>
+        </div>
+      </Show>
     </form>
   )
 }
