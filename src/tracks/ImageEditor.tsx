@@ -1,6 +1,6 @@
 // import { useRef, useCallback, useEffect } from 'react'
 import { type JSX, onMount } from 'solid-js'
-import { MarkerArea, EllipseMarker, CoverMarker } from 'markerjs2'
+import { MarkerArea, EllipseMarker, CoverMarker, FrameMarker } from 'markerjs2'
 
 export default function ImageEditor(props: {
   src: string
@@ -17,7 +17,7 @@ export default function ImageEditor(props: {
       throw new Error('ImageEditor did not mount correctly')
 
     markerRef = new MarkerArea(imageRef)
-    markerRef.availableMarkerTypes = [EllipseMarker, CoverMarker]
+    markerRef.availableMarkerTypes = [EllipseMarker, CoverMarker, FrameMarker]
     // deno-lint-ignore no-explicit-any
     markerRef.addEventListener('render', (event) => {
       props.onChange(event.dataUrl)
