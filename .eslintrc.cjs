@@ -10,5 +10,6 @@ module.exports = {
   plugins: ['solid'],
   rules: {
     // 'react-refresh/only-export-components': 'warn',
+    '@typescript-eslint/ban-ts-comment': 0,
   },
 }

@@ -1,12 +1,25 @@
-.group-item {
-  transition: all 0.5s;
+.slide {
+  transition: all 0.2s;
 }
-
-.group-item-enter,
-.group-item-exit-to {
+/* 
+.slide-enter,
+.slide-exit-to {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateZ(-30px);
 }
-.group-item-exit-active {
+.slide-exit-active {
   position: absolute;
+} */
+
+.slide-enter-active,
+.slide-exit-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+.slide-enter,
+.slide-exit-to {
+  transform: translateX(100px);
+  opacity: 0;
+}
+.slide-enter {
+  transform: translateX(-100px);
 }

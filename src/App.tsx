@@ -3,6 +3,7 @@ import { Routes, Route } from '@solidjs/router'
 // import { useHydrated } from './ultra/useHydrated.ts'
 
 import GroupPage from './groups/GroupPage.tsx'
+import RematchDynamic from './components/DynamicRoute.tsx'
 
 export default function App() {
   // Dexie does not work in SSR environment
@@ -10,7 +11,10 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/:group?" component={GroupPage} />
+        <Route
+          path=":group?"
+          element={<RematchDynamic component={GroupPage} />}
+        />
       </Routes>
     </>
   )

@@ -14,10 +14,10 @@ export default function TrackList(props: { groupId: string }) {
   return (
     <div class="m-2 flex flex-col justify-center gap-y-4">
       <Upload groupId={props.groupId} />
-      <TransitionGroup name="group-item">
+      <TransitionGroup name="slide">
         <For each={tracks}>
           {(track) => (
-            <div class="group-item">
+            <div class="slide">
               <TrackImage track={track} isFinal={track === last(tracks)} />
             </div>
           )}
