@@ -9,10 +9,10 @@ import { Button } from '../components/mod.ts'
 export default function GroupEdit(props: { group: Group; canDelete: boolean }) {
   return (
     <Show when={props.group}>
-      <div class="p-2">
+      <>
         <TrackList groupId={props.group.id} />
         <GroupForm group={props.group} canDelete={props.canDelete} />
-      </div>
+      </>
     </Show>
   )
 }

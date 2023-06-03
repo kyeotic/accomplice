@@ -22,7 +22,7 @@ export default function GroupList(props: { groups: Group[] }) {
 
   return (
     <>
-      <div class="mb-4 text-lg font-medium text-center text-gray-500 border-b border-gray-200 font-sans">
+      <div class="mb-2 px-8 text-lg font-medium text-center text-gray-500 border-b border-gray-200 font-sans shadow-2xl">
         <ul class="flex flex-wrap -mb-px list-none items-center">
           <For each={props.groups}>
             {(g, i) => (
