@@ -28,7 +28,7 @@ export default function GroupList(props: { groups: Group[] }) {
             {(g, i) => (
               <li class="mr-2">
                 <A
-                  href={`/${i() === 0 ? '' : g.name}`}
+                  href={`/${i() === 0 ? '' : encodeURIComponent(g.name)}`}
                   end
                   activeClass="reset inline-block p-2 border-solid text-teal-600 border-b-2 border-teal-600 rounded-t-lg active"
                   inactiveClass="reset inline-block p-2 border-solid border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-400 hover:border-gray-300"

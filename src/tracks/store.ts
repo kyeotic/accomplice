@@ -24,7 +24,7 @@ export async function addTrack(track: Omit<Track, 'id' | 'position'>) {
       id: nanoid(),
       position: maxPosition,
     }
-    console.log('saving track', newTrack)
+    console.log('saving track', newTrack.id)
     try {
       const id = await db.tracks.add(newTrack)
       console.log('added track', id)
