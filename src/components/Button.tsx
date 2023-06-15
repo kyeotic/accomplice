@@ -26,7 +26,7 @@ export default function Button(props: ButtonProps) {
         class: BASE,
         type: 'button' as JSX.ButtonHTMLAttributes<HTMLButtonElement>['type'],
       },
-      props
+      props,
     ),
     [
       'class',
@@ -37,7 +37,7 @@ export default function Button(props: ButtonProps) {
       'disabled',
       'onClick',
       'type',
-    ]
+    ],
   )
 
   function style() {
@@ -50,7 +50,7 @@ export default function Button(props: ButtonProps) {
         : merged.secondary
         ? COLOR_SECONDARY
         : COLOR_BASE,
-      merged.disabled && DISABLED
+      merged.disabled && DISABLED,
     )
 
     if (merged.small) result = classNames(result, SMALL)

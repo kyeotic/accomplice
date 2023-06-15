@@ -11,10 +11,7 @@ export default function App() {
   return (
     <>
       <Routes>
-      <Route
-          path="/"
-          component={GroupPage}
-        />
+        <Route path="/" component={GroupPage} />
         <Route
           path=":group?"
           element={<RematchDynamic key="group" component={GroupPage} />}

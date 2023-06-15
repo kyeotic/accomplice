@@ -8,7 +8,7 @@ import { Accessor } from 'solid-js'
 
 export function useTracks(group: Accessor<string>) {
   return useDbQuery(async () =>
-    db.tracks.where({ group: group() }).sortBy('position')
+    db.tracks.where({ group: group() }).sortBy('position'),
   )
 }
 
@@ -56,10 +56,10 @@ export async function moveTrack(track: Track, targetPosition: number) {
     const isDecreasing = targetPosition < track.position
     const tracksToMove = isDecreasing
       ? dbTracks.filter(
-          (t) => t.position >= targetPosition && t.position < track.position
+          (t) => t.position >= targetPosition && t.position < track.position,
         )
       : dbTracks.filter(
-          (t) => t.position <= targetPosition && t.position > track.position
+          (t) => t.position <= targetPosition && t.position > track.position,
         )
 
     await db.tracks.bulkPut([

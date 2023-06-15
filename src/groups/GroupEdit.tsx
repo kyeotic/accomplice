@@ -1,10 +1,10 @@
 import { createSignal, createEffect, Show, mergeProps } from 'solid-js'
 import { useNavigate, useSearchParams } from '@solidjs/router'
 
-import { updateGroup, deleteGroup } from './store.ts'
+import { updateGroup, deleteGroup, getSerializedGroup } from './store.ts'
 import TrackList from '../tracks/TrackList.tsx'
 import { Group } from '../types.ts'
-import { Button } from '../components/mod.ts'
+import { Button, ClipboardButton } from '../components/mod.ts'
 
 export default function GroupEdit(props: { group: Group; canDelete: boolean }) {
   return (
@@ -57,10 +57,14 @@ function GroupForm(props: { group: Group; canDelete: boolean }) {
     setName(props.group.name)
   }
 
-  const handleDelete = async () => {
+  async function handleDelete() {
     // console.log('delete group', props.group)
     deleteGroup(props.group.id)
     navigate('/')
+  }
+
+  async function handleCopy() {
+    return getSerializedGroup(props.group.id)
   }
 
   return (
@@ -88,10 +92,14 @@ function GroupForm(props: { group: Group; canDelete: boolean }) {
         />
       </div>
       <Show when={merged.canDelete}>
-        <div class="mt-7 mb-1 mx-4">
+        <div class="mt-7 mb-1 mx-4 flex gap-2">
           <Button extraClass="text-sm rounded" danger onClick={handleDelete}>
-            Delete Group ❌
+            Delete Group <i class="fa-solid fa-trash" />
           </Button>
+
+          <ClipboardButton getText={handleCopy}>
+            Export Group <i class="fa-solid fa-file-export" />
+          </ClipboardButton>
         </div>
       </Show>
     </form>

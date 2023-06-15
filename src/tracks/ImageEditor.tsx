@@ -4,10 +4,13 @@ import {
   EllipseMarker,
   CoverMarker,
   FrameMarker,
+  TextMarker,
   type MarkerAreaState,
 } from 'markerjs2'
 import { Track } from '../types'
 import { updateTrack } from './store'
+
+const MARKERS = [EllipseMarker, CoverMarker, FrameMarker, TextMarker]
 
 export default function ImageEditor(props: { track: Track }): JSX.Element {
   // The edit and marked tracking are a combined hack
@@ -16,7 +19,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
   // it is caused by the editor closing while the original image is the src
   // there is no way to get the new mark until the editor has already started closing :(
   const [markedSrc, setMarked] = createSignal(
-    props.track.markerImage ?? props.track.image
+    props.track.markerImage ?? props.track.image,
   )
   const [isEditing, setEditing] = createSignal(false)
   let imageRef: HTMLImageElement | undefined
@@ -35,7 +38,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
       throw new Error('ImageEditor did not mount correctly')
 
     areaRef = new MarkerArea(imageRef)
-    areaRef.availableMarkerTypes = [EllipseMarker, CoverMarker, FrameMarker]
+    areaRef.availableMarkerTypes = MARKERS
     areaRef.addEventListener('render', async (event) => {
       const newSrc = event.dataUrl
       setMarked(newSrc)

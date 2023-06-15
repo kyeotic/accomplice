@@ -7,7 +7,9 @@ export default function RematchDynamic(props: {
 }): JSX.Element {
   const params = useParams()
 
-  return <Show keyed when={params[props.key] ?? ''}>
-    {props.component({})}
-  </Show>
+  return (
+    <Show keyed when={params[props.key] ?? ''}>
+      {props.component({})}
+    </Show>
+  )
 }

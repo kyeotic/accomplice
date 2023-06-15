@@ -3,6 +3,7 @@ import { db } from '../db/db'
 import { useDbItem, useDbQuery } from '../db/query'
 import { Group } from '../types'
 import { nanoid } from 'nanoid'
+import { deserializeGroup, serializeGroup } from './serializer'
 
 export function useGroups() {
   return useDbQuery(() => db.groups.toCollection().sortBy('createdAt'))
@@ -37,4 +38,39 @@ export async function deleteGroup(id: string) {
     await db.groups.delete(id)
   })
   return
+}
+
+export async function getSerializedGroup(id: string): Promise<string> {
+  const group = await db.groups.get(id)
+  const tracks = await db.tracks.where({ group: id }).toArray()
+
+  if (!group) return ''
+
+  return serializeGroup(group, tracks)
+}
+
+export async function saveSerializedGroup(serialized: string): Promise<Group> {
+  const groups = await db.groups.toArray()
+  const { group, tracks } = await deserializeGroup(serialized)
+
+  group.id = nanoid()
+  group.createdAt = Date.now()
+  tracks.forEach((t) => {
+    t.group = group.id
+  })
+
+  const originalName = group.name
+  let inc = 0
+
+  // get a unique name
+  while (groups.some((g) => g.name === group.name)) {
+    group.name = originalName + ` ${++inc}`
+  }
+
+  console.log('deserialized', group, tracks)
+
+  await db.groups.put(group)
+  await db.tracks.bulkPut(tracks)
+
+  return group
 }
