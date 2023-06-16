@@ -15,6 +15,22 @@ import { last } from 'lodash'
 
 const MARKERS = [EllipseMarker, CoverMarker, FrameMarker, TextMarker]
 
+const DEFAULT_MARK = {
+  fillColor: '#EF4444',
+  strokeColor: '#EF4444',
+  strokeWidth: 3,
+  strokeDasharray: '',
+  opacity: 1,
+  left: 183,
+  top: 93,
+  width: 40,
+  height: 40,
+  rotationAngle: 0,
+  visualTransformMatrix: { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 },
+  containerTransformMatrix: { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 },
+  typeName: 'EllipseMarker',
+} as any as RectangularBoxMarkerBaseState
+
 export default function ImageEditor(props: { track: Track }): JSX.Element {
   // The edit and marked tracking are a combined hack
   // to reduce the flash of the unmarked image that can be seen
@@ -52,6 +68,10 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     areaRef.addEventListener('close', () => {
       setEditing(false)
     })
+
+    areaRef.addEventListener('markercreate', (event) => {
+      console.log(event.marker?.getState())
+    })
   })
 
   function handleClick(e: MouseEvent) {
@@ -70,14 +90,16 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
   }
 
   function quickMark(e: MouseEvent) {
-    if (!props.track.markerState) return
-    const lastMarker: MarkerBaseState | undefined =
-      last(deserializeState(props.track.markerState)?.markers) ?? undefined
+    const state = props.track.markerState
+      ? deserializeState(props.track.markerState)
+      : imageRef && createMarkerState(imageRef)
+    if (!state) return
+
+    const lastMarker: MarkerBaseState = last(state?.markers) ?? DEFAULT_MARK
 
     if (!isCenterable(lastMarker)) return
 
     const area = areaRef!
-    const markerState = deserializeState(props.track.markerState)
 
     const newMark = {
       ...lastMarker,
@@ -86,8 +108,8 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     }
 
     const newState = {
-      ...markerState,
-      markers: [...markerState.markers, newMark],
+      ...state,
+      markers: [...state.markers, newMark],
     } as MarkerAreaState
 
     area.renderState(newState)
@@ -116,6 +138,14 @@ function deserializeState(str: string): MarkerAreaState {
 
 function getOrigin(centerP: number, size: number): number {
   return centerP - size / 2
+}
+
+function createMarkerState(img: HTMLImageElement): MarkerAreaState {
+  return {
+    width: img.width,
+    height: img.height,
+    markers: [],
+  }
 }
 
 function isCenterable(
