@@ -1,18 +1,26 @@
 import { type JSX, onMount, createSignal } from 'solid-js'
 import {
+  type MarkerBaseState,
+  type RectangularBoxMarkerBaseState,
+  type MarkerAreaState,
   MarkerArea,
   EllipseMarker,
   CoverMarker,
   FrameMarker,
   TextMarker,
-  type MarkerAreaState,
 } from 'markerjs2'
 import { Track } from '../types'
 import { updateTrack } from './store'
+import { last } from 'lodash'
 
 const MARKERS = [EllipseMarker, CoverMarker, FrameMarker, TextMarker]
 
 export default function ImageEditor(props: { track: Track }): JSX.Element {
+  let lastMarker: MarkerBaseState | undefined
+  if (props.track.markerState) {
+    lastMarker =
+      last(deserializeState(props.track.markerState)?.markers) ?? undefined
+  }
   // The edit and marked tracking are a combined hack
   // to reduce the flash of the unmarked image that can be seen
   // when rendering closes
@@ -45,14 +53,49 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
       setEditing(false)
       await onChange(newSrc, serializeState(event.state))
     })
+
+    areaRef.addEventListener('close', () => {
+      setEditing(false)
+    })
+
+    areaRef.addEventListener('markercreate', (event) => {
+      lastMarker = event.marker?.getState()
+    })
   })
 
-  function handleShow() {
+  function handleClick(e: MouseEvent) {
+    const isQuickMark = e.ctrlKey
+
+    if (isQuickMark) {
+      quickMark(e)
+      return
+    }
+
     setEditing(true)
     areaRef?.show()
     if (props.track.markerState) {
       areaRef?.restoreState(deserializeState(props.track.markerState))
     }
+  }
+
+  function quickMark(e: MouseEvent) {
+    if (!props.track.markerState || !isCenterable(lastMarker)) return
+
+    const area = areaRef!
+    const markerState = deserializeState(props.track.markerState)
+
+    const newMark = {
+      ...lastMarker,
+      top: getOrigin(e.offsetY, lastMarker.height),
+      left: getOrigin(e.offsetX, lastMarker.width),
+    }
+
+    const newState = {
+      ...markerState,
+      markers: [...markerState.markers, newMark],
+    } as MarkerAreaState
+
+    area.renderState(newState)
   }
 
   const markerImage = () => (isEditing() ? props.track.image : markedSrc())
@@ -63,7 +106,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
       ref={imageRef}
       src={markerImage()}
       alt={props.track.id}
-      onClick={handleShow}
+      onClick={handleClick}
     />
   )
 }
@@ -74,4 +117,20 @@ function serializeState(state: any): string {
 
 function deserializeState(str: string): MarkerAreaState {
   return JSON.parse(str)
+}
+
+function getOrigin(centerP: number, size: number): number {
+  return centerP - size / 2
+}
+
+function isCenterable(
+  marker: MarkerBaseState | undefined,
+): marker is RectangularBoxMarkerBaseState {
+  return (
+    !!marker &&
+    'left' in marker &&
+    'top' in marker &&
+    'width' in marker &&
+    'height' in marker
+  )
 }
