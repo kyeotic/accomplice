@@ -16,11 +16,6 @@ import { last } from 'lodash'
 const MARKERS = [EllipseMarker, CoverMarker, FrameMarker, TextMarker]
 
 export default function ImageEditor(props: { track: Track }): JSX.Element {
-  let lastMarker: MarkerBaseState | undefined
-  if (props.track.markerState) {
-    lastMarker =
-      last(deserializeState(props.track.markerState)?.markers) ?? undefined
-  }
   // The edit and marked tracking are a combined hack
   // to reduce the flash of the unmarked image that can be seen
   // when rendering closes
@@ -57,10 +52,6 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     areaRef.addEventListener('close', () => {
       setEditing(false)
     })
-
-    areaRef.addEventListener('markercreate', (event) => {
-      lastMarker = event.marker?.getState()
-    })
   })
 
   function handleClick(e: MouseEvent) {
@@ -79,7 +70,11 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
   }
 
   function quickMark(e: MouseEvent) {
-    if (!props.track.markerState || !isCenterable(lastMarker)) return
+    if (!props.track.markerState) return
+    const lastMarker: MarkerBaseState | undefined =
+      last(deserializeState(props.track.markerState)?.markers) ?? undefined
+
+    if (!isCenterable(lastMarker)) return
 
     const area = areaRef!
     const markerState = deserializeState(props.track.markerState)
