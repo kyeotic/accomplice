@@ -75,7 +75,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
   })
 
   function handleClick(e: MouseEvent) {
-    const isQuickMark = e.ctrlKey
+    const isQuickMark = e.ctrlKey || e.metaKey
 
     if (isQuickMark) {
       quickMark(e)
