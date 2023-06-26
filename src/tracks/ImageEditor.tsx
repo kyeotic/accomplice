@@ -67,39 +67,45 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     areaRef = new MarkerArea(imageRef)
     areaRef.availableMarkerTypes = MARKERS
     areaRef.addEventListener('render', async (event) => {
+      debug('in render')
       const newSrc = event.dataUrl
       setMarked(newSrc)
       onClose()
       await onChange(newSrc, serializeState(event.state))
     })
 
-    areaRef.addEventListener('close', onClose)
-
     areaRef.addEventListener('markercreate', (event) => {
-      console.log(event.marker?.getState())
+      debug(event.marker?.getState())
     })
-
-    // Quick mark in edit mode
-    areaRef.addEventListener('show', (e) => {
-      // console.log('sghow', e)
-      ;((e.markerArea as any).coverDiv as HTMLDivElement)?.addEventListener(
-        'click',
-        handleEdit,
-      )
-    })
+    areaRef.addEventListener('show', onOpen)
+    areaRef.addEventListener('close', onClose)
   })
+
+  function onOpen() {
+    bindMarkerKeys()
+    const cover = (areaRef as any).coverDiv as HTMLDivElement
+    cover?.addEventListener('click', editClick)
+    cover?.addEventListener('wheel', scrollMarkerColor)
+  }
 
   function onClose() {
     setEditing(false)
     unbindMarkerKeys()
     // Quick mark in edit mode cleanup
-    ;((areaRef as any).coverDiv as HTMLDivElement)?.removeEventListener(
-      'click',
-      handleEdit,
-    )
+    const cover = (areaRef as any).coverDiv as HTMLDivElement
+    cover?.removeEventListener('click', editClick)
+    cover?.removeEventListener('wheel', scrollMarkerColor)
+  }
+
+  function editClick(e: MouseEvent) {
+    const isQuickMark = e.ctrlKey || e.metaKey
+
+    if (!isQuickMark) return
+    quickMark(e)
   }
 
   function handleEdit(e: MouseEvent) {
+    debug('in edit')
     const isQuickMark = e.ctrlKey || e.metaKey
 
     if (isQuickMark) {
@@ -112,7 +118,6 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     if (props.track.markerState) {
       areaRef?.restoreState(deserializeState(props.track.markerState))
     }
-    bindMarkerKeys()
   }
 
   function quickMark(e: MouseEvent) {
@@ -143,7 +148,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
 
   const startMarker = (key: string, type: any) =>
     hotkeys(key, EDIT_SCOPE, () => {
-      console.log('you pressed', key)
+      debug('you pressed', key)
       areaRef!.createNewMarker(type)
     })
 
@@ -152,8 +157,8 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     startMarker(SELECT_SQUARE, CoverMarker)
     startMarker(SELECT_FRAME, FrameMarker)
     startMarker(SELECT_TEXT, TextMarker)
-    hotkeys('ESC', () => {
-      // console.log('area esc', areaRef?.currentMarker)
+    hotkeys('ESC', EDIT_SCOPE, () => {
+      // debug('area esc', areaRef?.currentMarker)
 
       if (areaRef?.currentMarker) {
         areaRef.switchToSelectMode()
@@ -162,11 +167,35 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
       }
       // areaRef?.close()
     })
+    hotkeys('shift+a', EDIT_SCOPE, (_: KeyboardEvent) => {
+      debug('debug', areaRef?.currentMarker)
+      // scrollMarkerColor()
+    })
     hotkeys.setScope(EDIT_SCOPE)
   }
 
   function unbindMarkerKeys() {
+    debug('unbind')
     hotkeys.deleteScope(EDIT_SCOPE)
+  }
+
+  function scrollMarkerColor(e: WheelEvent) {
+    if (!e.shiftKey) return
+    if (!areaRef?.currentMarker || !('fillColor' in areaRef.currentMarker))
+      return
+    const currentMarkerColor = areaRef.currentMarker.fillColor
+    const colors = (areaRef.currentMarker as any)?.fillPanel?.colors as string[]
+    if (!colors?.length) return
+
+    const colorPosition =
+      colors.findIndex((c) => c === currentMarkerColor) ?? colors[0]
+    const nextColor = colors.at(
+      Math.sign(e.deltaY) ? colorPosition + 1 : colorPosition - 1,
+    )
+
+    ;(areaRef.currentMarker as any).setFillColor(nextColor)
+    if ('strokeColor' in areaRef.currentMarker)
+      (areaRef.currentMarker as any).setStrokeColor(nextColor)
   }
 
   const markerImage = () => (isEditing() ? props.track.image : markedSrc())
@@ -212,4 +241,9 @@ function isCenterable(
     'width' in marker &&
     'height' in marker
   )
+}
+
+function debug(...args: any[]) {
+  if (!window.location.hostname.includes('localhost')) return
+  console.log(...args)
 }
