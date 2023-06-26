@@ -9,11 +9,19 @@ import {
   FrameMarker,
   TextMarker,
 } from 'markerjs2'
+import { last } from 'lodash'
+import hotkeys from 'hotkeys-js'
+
 import { Track } from '../types'
 import { updateTrack } from './store'
-import { last } from 'lodash'
 
 const MARKERS = [EllipseMarker, CoverMarker, FrameMarker, TextMarker]
+
+const EDIT_SCOPE = 'MARKER_EDITING'
+const SELECT_CIRCLE = '1'
+const SELECT_SQUARE = '2'
+const SELECT_FRAME = '3'
+const SELECT_TEXT = '4'
 
 const DEFAULT_MARK = {
   fillColor: '#EF4444',
@@ -61,20 +69,37 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     areaRef.addEventListener('render', async (event) => {
       const newSrc = event.dataUrl
       setMarked(newSrc)
-      setEditing(false)
+      onClose()
       await onChange(newSrc, serializeState(event.state))
     })
 
-    areaRef.addEventListener('close', () => {
-      setEditing(false)
-    })
+    areaRef.addEventListener('close', onClose)
 
     areaRef.addEventListener('markercreate', (event) => {
       console.log(event.marker?.getState())
     })
+
+    // Quick mark in edit mode
+    areaRef.addEventListener('show', (e) => {
+      // console.log('sghow', e)
+      ;((e.markerArea as any).coverDiv as HTMLDivElement)?.addEventListener(
+        'click',
+        handleEdit,
+      )
+    })
   })
 
-  function handleClick(e: MouseEvent) {
+  function onClose() {
+    setEditing(false)
+    unbindMarkerKeys()
+    // Quick mark in edit mode cleanup
+    ;((areaRef as any).coverDiv as HTMLDivElement)?.removeEventListener(
+      'click',
+      handleEdit,
+    )
+  }
+
+  function handleEdit(e: MouseEvent) {
     const isQuickMark = e.ctrlKey || e.metaKey
 
     if (isQuickMark) {
@@ -87,6 +112,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     if (props.track.markerState) {
       areaRef?.restoreState(deserializeState(props.track.markerState))
     }
+    bindMarkerKeys()
   }
 
   function quickMark(e: MouseEvent) {
@@ -115,6 +141,34 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
     area.renderState(newState)
   }
 
+  const startMarker = (key: string, type: any) =>
+    hotkeys(key, EDIT_SCOPE, () => {
+      console.log('you pressed', key)
+      areaRef!.createNewMarker(type)
+    })
+
+  function bindMarkerKeys() {
+    startMarker(SELECT_CIRCLE, EllipseMarker)
+    startMarker(SELECT_SQUARE, CoverMarker)
+    startMarker(SELECT_FRAME, FrameMarker)
+    startMarker(SELECT_TEXT, TextMarker)
+    hotkeys('ESC', () => {
+      // console.log('area esc', areaRef?.currentMarker)
+
+      if (areaRef?.currentMarker) {
+        areaRef.switchToSelectMode()
+      } else {
+        areaRef?.close()
+      }
+      // areaRef?.close()
+    })
+    hotkeys.setScope(EDIT_SCOPE)
+  }
+
+  function unbindMarkerKeys() {
+    hotkeys.deleteScope(EDIT_SCOPE)
+  }
+
   const markerImage = () => (isEditing() ? props.track.image : markedSrc())
 
   return (
@@ -123,7 +177,7 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
       ref={imageRef}
       src={markerImage()}
       alt={props.track.id}
-      onClick={handleClick}
+      onClick={handleEdit}
     />
   )
 }
