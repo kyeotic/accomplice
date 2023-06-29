@@ -5,7 +5,7 @@ import { Group } from '../types'
 import { nanoid } from 'nanoid'
 import { deserializeGroup, serializeGroup } from './serializer'
 
-export function useGroups() {
+export function useGroupQuery() {
   return useDbQuery(() => db.groups.toCollection().sortBy('createdAt'))
 }
 

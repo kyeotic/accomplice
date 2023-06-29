@@ -2,15 +2,16 @@ import { A, useNavigate } from '@solidjs/router'
 import { For } from 'solid-js'
 
 import { newGroup, saveSerializedGroup } from './store.ts'
-import { Group } from '../types.ts'
+import { useGroups } from './context.tsx'
 
 const ACTIVE =
   'reset inline-block p-2 border-solid text-teal-600 border-b-2 border-teal-600 rounded-t-lg active'
 const INACTIVE =
   'reset inline-block p-2 border-solid border-b-2 border-transparent rounded-t-lg text-gray-600 hover:text-gray-400 hover:border-gray-300'
 
-export default function GroupList(props: { groups: Group[] }) {
+export default function GroupList() {
   const navigate = useNavigate()
+  const { groups } = useGroups()
 
   async function handleAdd(e: Event) {
     e.preventDefault()
@@ -35,7 +36,7 @@ export default function GroupList(props: { groups: Group[] }) {
     <>
       <div class="mb-2 px-8 text-lg font-medium text-center text-gray-500 border-b border-gray-200 font-sans shadow-2xl">
         <ul class="flex flex-wrap -mb-px list-none items-center">
-          <For each={props.groups}>
+          <For each={groups}>
             {(g, i) => (
               <li class="mr-2">
                 <A
