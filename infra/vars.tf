@@ -10,7 +10,7 @@ variable "region" {
 }
 
 variable "domain_name" {
-  default = "untrack.kye.dev"
+  default = "accomplice.kye.dev"
 }
 
 variable "zone_name" {
@@ -18,5 +18,5 @@ variable "zone_name" {
 }
 
 variable "deno_deploy_acme" {
-  default = "0dbd78da34f77ea0a29b4a23._acme.deno.dev."
+  default = "a9f6f5ec3c052587eba8bf70._acme.deno.dev."
 }
