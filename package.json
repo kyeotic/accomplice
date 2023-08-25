@@ -11,7 +11,7 @@
     "style:ci": "prettier --check \"src/**/*.{ts,tsx}\"",
     "preview": "vite preview",
     "deploy": "run-s build deploy:deno",
-    "deploy:deno": "cd dist/ && deployctl deploy --prod --project=kyeotic-unlock https://deno.land/x/spa_server@0.3.0/mod.ts"
+    "deploy:deno": "cd dist/ && deployctl deploy --prod --project=kyeotic-accomplice https://deno.land/x/spa_server@0.3.0/mod.ts"
   },
   "dependencies": {
     "@solidjs/router": "^0.8.2",

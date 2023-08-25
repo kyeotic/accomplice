@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 
 export const UNTRACK_DB = 'untrack'
 
-export class UnlockDb extends Dexie {
+export class AccompliceDb extends Dexie {
   tracks!: Table<Track>
   groups!: Table<Group>
 
@@ -61,7 +61,7 @@ export class UnlockDb extends Dexie {
   }
 }
 
-export const db = new UnlockDb()
+export const db = new AccompliceDb()
 
 // Initial group
 db.on('populate', () => {
