@@ -70,7 +70,7 @@ function GroupForm(props: { group: Group; canDelete: boolean }) {
   return (
     <form
       onSubmit={handleSubmit}
-      class=" flex justify-center bg-white shadow-md rounded pb-2 mb-2"
+      class=" flex justify-center shadow-md rounded pb-2 mb-2"
     >
       <div class="">
         <label
@@ -83,7 +83,7 @@ function GroupForm(props: { group: Group; canDelete: boolean }) {
         <input
           ref={nameRef}
           id="groupName"
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
           value={name()}
           onFocus={(e) => e.target.select()}

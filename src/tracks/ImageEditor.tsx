@@ -1,4 +1,4 @@
-import { type JSX, onMount, createSignal } from 'solid-js'
+import { type JSX, onMount, createSignal, createEffect } from 'solid-js'
 import {
   type MarkerBaseState,
   type RectangularBoxMarkerBaseState,
@@ -51,6 +51,12 @@ export default function ImageEditor(props: { track: Track }): JSX.Element {
   const [isEditing, setEditing] = createSignal(false)
   let imageRef: HTMLImageElement | undefined
   let areaRef: MarkerArea | undefined
+
+  // The image can be changed out of band by a swap-upload
+  // When this happens the markedSrc needs to be updated, since its what is rendered
+  createEffect(() => {
+    setMarked(props.track.markerImage ?? props.track.image)
+  })
 
   async function onChange(newSrc: string, state?: string) {
     return updateTrack({

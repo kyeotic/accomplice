@@ -1,15 +1,22 @@
+import classNames from 'classnames'
+
 import { Button } from '../components/mod.ts'
 import { deleteTrack, moveTrack } from './store.ts'
 import { Track } from '../types.ts'
 import ImageEditor from './ImageEditor.tsx'
 
-export default function TrackItem(props: { track: Track; isFinal?: boolean }) {
+export default function TrackImage(props: {
+  track: Track
+  isFinal?: boolean
+  setSwap: (trackId: string | null) => void
+  isSwapping: boolean
+}) {
   return (
     <div class="flex justify-center mx-auto">
       <div class="flex-shrink">
         <ImageEditor track={props.track} />
       </div>
-      <div class="flex-shrink bg-gray-100 flex flex-col justify-between ">
+      <div class="flex-shrink bg-gray-600 flex flex-col justify-between ">
         <Button
           small
           secondary
@@ -19,9 +26,23 @@ export default function TrackItem(props: { track: Track; isFinal?: boolean }) {
         >
           <i class="fa-solid fa-arrow-up" />
         </Button>
-        <Button small danger onClick={() => deleteTrack(props.track.id)}>
-          <i class="fa-solid fa-trash" />
-        </Button>
+        <div class="flex flex-col gap-1">
+          <Button
+            small
+            onClick={() =>
+              props.setSwap(props.isSwapping ? null : props.track.id)
+            }
+          >
+            <i
+              class={classNames('fa-solid fa-arrow-right-arrow-left', {
+                'fa-beat': props.isSwapping,
+              })}
+            />
+          </Button>
+          <Button small danger onClick={() => deleteTrack(props.track.id)}>
+            <i class="fa-solid fa-trash" />
+          </Button>
+        </div>
         <Button
           small
           secondary

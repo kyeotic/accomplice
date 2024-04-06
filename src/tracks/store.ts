@@ -39,6 +39,20 @@ export async function updateTrack(track: Track) {
   return track
 }
 
+export async function updateTrackImage(trackId: string, image: string) {
+  return await db.transaction('readwrite', db.tracks, async () => {
+    const track = await db.tracks.get(trackId)
+    if (!track) throw new Error('Track not found')
+    await updateTrack({
+      ...track,
+      image,
+      markerImage: undefined,
+      markerState: undefined,
+    })
+    console.log('updaed', trackId)
+  })
+}
+
 export async function deleteTrack(id: string) {
   return await db.tracks.delete(id)
 }

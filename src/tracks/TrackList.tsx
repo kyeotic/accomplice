@@ -1,4 +1,4 @@
-import { For, Show } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 import { TransitionGroup } from 'solid-transition-group'
 import { last } from 'lodash'
 
@@ -10,15 +10,29 @@ import './tracks.css'
 
 export default function TrackList(props: { groupId: string }) {
   const tracks = useTracks(() => props.groupId)
+  const [swappingTrackId, setSwapping] = createSignal<string | null>(null)
+
+  function setSwap(trackId: string | null) {
+    setSwapping(trackId)
+  }
 
   return (
     <div class="m-2 flex flex-col justify-center gap-y-4">
-      <Upload groupId={props.groupId} />
+      <Upload
+        groupId={props.groupId}
+        trackId={swappingTrackId() ?? undefined}
+        onSubmit={() => setSwap(null)}
+      />
       <TransitionGroup name="slide">
         <For each={tracks}>
           {(track) => (
             <div class="slide">
-              <TrackImage track={track} isFinal={track === last(tracks)} />
+              <TrackImage
+                track={track}
+                isFinal={track === last(tracks)}
+                setSwap={setSwap}
+                isSwapping={swappingTrackId() == track.id}
+              />
             </div>
           )}
         </For>

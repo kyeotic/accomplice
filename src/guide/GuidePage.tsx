@@ -3,7 +3,7 @@ import config from '../config'
 
 export default function GuidePage() {
   return (
-    <div class="py-6 px-8">
+    <div class="py-6 px-8 max-w-3xl mx-auto">
       <Title>{config.appName} Guide</Title>
       <Body>
         {config.appName} is an app for organizing and marking images. Its
