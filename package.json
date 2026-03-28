@@ -10,8 +10,9 @@
     "style": "prettier  --write \"src/**/*.{ts,tsx}\"",
     "style:ci": "prettier --check \"src/**/*.{ts,tsx}\"",
     "preview": "vite preview",
-    "deploy": "run-s build deploy:deno",
-    "deploy:deno": "cd dist/ && deployctl deploy --prod --project=kyeotic-accomplice jsr:@kyeotic/server/spa"
+    "deploy": "run-s build deploy:cf",
+    "deploy:cf": "wrangler pages deploy dist/ --project-name accomplice",
+    "deploy:infra": "./infra/deploy"
   },
   "dependencies": {
     "@solidjs/router": "^0.8.2",
@@ -43,6 +44,7 @@
     "typescript": "^5.0.2",
     "unocss": "^0.52.7",
     "vite": "^4.3.9",
-    "vite-plugin-solid": "^2.7.0"
+    "vite-plugin-solid": "^2.7.0",
+    "wrangler": "^3"
   }
 }
